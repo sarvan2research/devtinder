@@ -3,16 +3,32 @@ const express = require("express");
 const port = 7777;
 const app = express();
 
-app.get("/user", (req, res) => {
-  res.send({ firstName: "saravanakumar", lastName: "Ravichandran" });
+// optional
+app.get("/user/ab?c", (req, res) => {
+  res.send("? optional testing, ab?c b is optional");
+});
+// multiple numbers
+app.get("/user/xy+z", (req, res) => {
+  res.send("Multiple xy+z can have multiple y in between");
+});
+// wildcards
+app.get("/user/j*k", (req, res) => {
+  res.send("* as wildcard have anything between j and k");
+});
+// regex fly as ending one
+app.get(/.*fly$/, (req, res) => {
+  res.send("word only ends with fly matches on this route");
 });
 
-app.post("/user", (req, res) => {
-  res.send("User successfully stored in DB");
+// Query in url
+app.get("/userQuery", (req, res) => {
+  console.log(req.query);
+  res.send("Query url fetching api");
 });
-
-app.delete("/user", (req, res) => {
-  res.send("User successfully deleted from DB");
+// param in url
+app.get("/userParam/:userID/:pwd/", (req, res) => {
+  console.log(req.params);
+  res.send("userParam fetching api");
 });
 
 app.get("/", (req, res) => {
@@ -33,3 +49,6 @@ app.listen(port, () => {
 // https://stackoverflow.com/questions/22343224/whats-the-difference-between-tilde-and-caret-in-package-json
 // ~ used to update latest patch verion 1.2.X < 1.3.0
 // ^ used to update latest minor & patch version 1.x.x < 2.0.0
+
+// diff between app.use vs app.get
+//https://github.com/rohan-paul/Awesome-JavaScript-Interviews/blob/master/Node-Express/app.use-vs-app.get.md
