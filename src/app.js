@@ -3,16 +3,16 @@ const express = require("express");
 const port = 7777;
 const app = express();
 
-app.use("/hello", (req, res) => {
-  res.send("its hello first resolution");
+app.get("/user", (req, res) => {
+  res.send({ firstName: "saravanakumar", lastName: "Ravichandran" });
 });
 
-app.use("/hello/1", (req, res) => {
-  res.send("im hello/1 request");
+app.post("/user", (req, res) => {
+  res.send("User successfully stored in DB");
 });
 
-app.get("/test", (req, res) => {
-  res.send("test url got hit on the way");
+app.delete("/user", (req, res) => {
+  res.send("User successfully deleted from DB");
 });
 
 app.get("/", (req, res) => {
