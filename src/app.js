@@ -1,19 +1,12 @@
 const express = require("express");
+const { adminAuth, userAuth } = require("./middlewares/auth");
 
 const port = 7777;
 const app = express();
 
 // admin endpoints
 
-app.use("/admin", (req, res, next) => {
-  const authToken = "xyz";
-  const isAuthorized = authToken === "xyz1";
-  if (isAuthorized === true) {
-    next();
-  } else {
-    res.status(401).send("Not authorized to access");
-  }
-});
+app.use("/admin", adminAuth);
 
 app.use("/admin/getAllData", (req, res, next) => {
   console.log("Entering into getalldata method");
@@ -23,6 +16,15 @@ app.use("/admin/getAllData", (req, res, next) => {
 app.use("/admin/single", (req, res, next) => {
   console.log("Entering into single method");
   res.send("All single data to admin user");
+});
+
+app.get("/user", userAuth, (req, res) => {
+  console.log("Enter into user get operation");
+  res.send("Send response for user operation");
+});
+app.get("/user/login", (req, res) => {
+  console.log("Enter into user login operation");
+  res.send("Send response for user login operation");
 });
 
 // app.use(
