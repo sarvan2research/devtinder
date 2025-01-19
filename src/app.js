@@ -3,33 +3,68 @@ const express = require("express");
 const port = 7777;
 const app = express();
 
-// optional
-app.get("/user/ab?c", (req, res) => {
-  res.send("? optional testing, ab?c b is optional");
-});
-// multiple numbers
-app.get("/user/xy+z", (req, res) => {
-  res.send("Multiple xy+z can have multiple y in between");
-});
-// wildcards
-app.get("/user/j*k", (req, res) => {
-  res.send("* as wildcard have anything between j and k");
-});
-// regex fly as ending one
-app.get(/.*fly$/, (req, res) => {
-  res.send("word only ends with fly matches on this route");
+app.use(
+  "/user",
+  (req, res, next) => {
+    console.log("Response 1!!");
+    //res.send("Its chainning response test response1");
+    next();
+  },
+  (req, res, next) => {
+    console.log("Response 2!!");
+    res.send("Its chainning response 2");
+    next();
+  }
+);
+
+// use case 7
+app.use("/test", (req, res, next) => {
+  console.log("Response 1!!");
+  //res.send("Its chainning response test response1");
+  next();
 });
 
-// Query in url
-app.get("/userQuery", (req, res) => {
-  console.log(req.query);
-  res.send("Query url fetching api");
+app.use("/test", (req, res, next) => {
+  console.log("Response 2!!");
+  res.send("Its chainning response 2");
+  next();
 });
-// param in url
-app.get("/userParam/:userID/:pwd/", (req, res) => {
-  console.log(req.params);
-  res.send("userParam fetching api");
-});
+//Js is single threaded language
+// 1. no res.send in app.use ==> browser stuck in infinite loop (waiting for response)
+// 2. First: res.send,next Second: res.send,next Output: First Reponse, Second error
+// 3. First: next,res.send Second: res.send,next Output: First Error, Second Response
+// 4. First: next Second: res.send,next Output: First Log, Second Response
+// 5. First: next Second: next Output: No method found
+// 6. can have array of chaining, it can be any order(l1,[l2,l3],l4,l5)
+// 7. It can be divided into two different call, call hirerachy matters.
+
+// // optional
+// app.get("/user/ab?c", (req, res) => {
+//   res.send("? optional testing, ab?c b is optional");
+// });
+// // multiple numbers
+// app.get("/user/xy+z", (req, res) => {
+//   res.send("Multiple xy+z can have multiple y in between");
+// });
+// // wildcards
+// app.get("/user/j*k", (req, res) => {
+//   res.send("* as wildcard have anything between j and k");
+// });
+// // regex fly as ending one
+// app.get(/.*fly$/, (req, res) => {
+//   res.send("word only ends with fly matches on this route");
+// });
+
+// // Query in url
+// app.get("/userQuery", (req, res) => {
+//   console.log(req.query);
+//   res.send("Query url fetching api");
+// });
+// // param in url
+// app.get("/userParam/:userID/:pwd/", (req, res) => {
+//   console.log(req.params);
+//   res.send("userParam fetching api");
+// });
 
 app.get("/", (req, res) => {
   res.send("Server home url with node mon");
