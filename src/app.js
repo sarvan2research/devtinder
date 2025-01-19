@@ -3,19 +3,41 @@ const express = require("express");
 const port = 7777;
 const app = express();
 
-app.use(
-  "/user",
-  (req, res, next) => {
-    console.log("Response 1!!");
-    //res.send("Its chainning response test response1");
+// admin endpoints
+
+app.use("/admin", (req, res, next) => {
+  const authToken = "xyz";
+  const isAuthorized = authToken === "xyz1";
+  if (isAuthorized === true) {
     next();
-  },
-  (req, res, next) => {
-    console.log("Response 2!!");
-    res.send("Its chainning response 2");
-    next();
+  } else {
+    res.status(401).send("Not authorized to access");
   }
-);
+});
+
+app.use("/admin/getAllData", (req, res, next) => {
+  console.log("Entering into getalldata method");
+  res.send("All data shown to admin user");
+});
+
+app.use("/admin/single", (req, res, next) => {
+  console.log("Entering into single method");
+  res.send("All single data to admin user");
+});
+
+// app.use(
+//   "/user",
+//   (req, res, next) => {
+//     console.log("Response 1!!");
+//     //res.send("Its chainning response test response1");
+//     next();
+//   },
+//   (req, res, next) => {
+//     console.log("Response 2!!");
+//     res.send("Its chainning response 2");
+//     next();
+//   }
+// );
 
 // use case 7
 app.use("/test", (req, res, next) => {
