@@ -4,6 +4,38 @@ const { adminAuth, userAuth } = require("./middlewares/auth");
 const port = 7777;
 const app = express();
 
+// Error handling
+//1. Order of error block matters, first block home url block never called as no at that time.
+//2. Second /getError called ==>throw error method send request to / second homeurl (this happens only if there is no try/catch in /geterror call).
+// 3. Second /getError called ==>throw error method called try/catch in /geterror method makes error call managed in same catch block never called second home url.
+
+app.use("/", (err, req, res, next) => {
+  console.log("Entering into home url");
+  if (err) {
+    res.status(500).send("Something wrong on server");
+  }
+});
+
+app.get("/getError", (req, res, next) => {
+  console.log("Entering into error url");
+  // case2
+  // throw new Error("Test error");
+  // res.send("Error response");
+  // case3
+  try {
+  } catch {
+    console.log("Entering into catch block");
+    res.status(500).send("Something wrong on server get Error method");
+  }
+});
+// if error not handled on the top most methods, then this will be called and showed generic error message.
+app.use("/", (err, req, res, next) => {
+  console.log("Entering into second home url");
+  if (err) {
+    res.status(500).send("Something wrong on server" + " ==> " + err);
+  }
+});
+
 // admin endpoints
 
 app.use("/admin", adminAuth);
@@ -90,9 +122,9 @@ app.use("/test", (req, res, next) => {
 //   res.send("userParam fetching api");
 // });
 
-app.get("/", (req, res) => {
-  res.send("Server home url with node mon");
-});
+// app.get("/", (req, res) => {
+//   res.send("Server home url with node mon");
+// });
 
 app.listen(port, () => {
   console.log("Server started successfully at port number " + port);
